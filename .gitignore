@@ -1,3 +1,5 @@
 .env
 *.pyc
 .env.keys
+skus_shein.json
+detalhes_shein.xlsx
