@@ -9,6 +9,7 @@ import requests
 from dotenv import load_dotenv
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
+from descriptografar import decrypt_KEY
 
 load_dotenv()
 
@@ -135,8 +136,15 @@ def trocar_temp_token(temp_token):
                 print(f"OpenKey ID: {open_key}")
                 print(f"SecretKey (criptografada): {encrypted_key}")
 
+                if encrypted_key:
+                    secret_key = decrypt_KEY(APP_SECRET, encrypted_key)
+                    print(f"SecretKey (descriptografada): {secret_key}")
+                else:
+                    secret_key = ""
+                    print("[ERRO] secretKey não veio na resposta.")
+
                 # Salvar as chaves
-                salvar_chaves(open_key)
+                salvar_chaves(open_key, encrypted_key, secret_key)
 
                 return result
             else:
@@ -149,12 +157,13 @@ def trocar_temp_token(temp_token):
 
     return None
 
-def salvar_chaves(open_key):
+def salvar_chaves(open_key, encrypted_key, secret_key):
     """
     Salva as chaves em um arquivo .env.keys
     """
     with open(".env.keys", "w") as f:
         f.write(f"SHEIN_OPEN_KEY={open_key}\n")
+        f.write(f"SHEIN_SECRET_KEY={secret_key}\n")
     
     print("\n✅ Chaves salvas em .env.keys")
 
