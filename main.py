@@ -1,11 +1,78 @@
-from modulos.auth_shein import gerar_link_autorizacao
+from modulos.trocar_temptoken import trocar_temp_token, testar_api_com_chaves, criar_link_autorizacao
+from dotenv import load_dotenv
+from modulos.teste import testar_check_publish_permission
+import os
 
+load_dotenv()
+
+# Configurações do ambiente
+APP_ID = os.getenv("SHEIN_APP_ID")
+APP_SECRET = os.getenv("SHEIN_APP_SECRET")
+
+# URLs dos ambientes
+TEST_API_HOST = "https://openapi-test01.sheincorp.cn"
+TEST_AUTH_HOST = "openapi-sem-test01.dotfashion.cn"
+PROD_API_HOST = "https://openapi.sheincorp.com"
+PROD_AUTH_HOST = "openapi-sem.sheincorp.com"
+
+# Escolha o ambiente (TEST ou PROD)
+ENVIRONMENT = "PROD"  # Mude para "PROD" quando for para produção
+
+if ENVIRONMENT == "TEST":
+    API_HOST = TEST_API_HOST
+    AUTH_HOST = TEST_AUTH_HOST
+else:
+    API_HOST = PROD_API_HOST
+    AUTH_HOST = PROD_AUTH_HOST
+
+    
 def main():
-    print("=== SHEIN AUTH FLUXO ===")
-    print("\n1) Link de autorização (abra no navegador, lojista precisa aceitar):")
-    print(gerar_link_autorizacao())
-
-    print("\n2) Após autorização, copie o tempToken da sua redirectUrl e cole aqui.")
+    """
+    Fluxo principal do processo de autorização
+    """
+    print("=" * 50)
+    print("CLIENTE API SHEIN - PROCESSO DE AUTORIZAÇÃO")
+    print("=" * 50)
+    
+    if not APP_ID or not APP_SECRET:
+        print("\n[ERRO] Configure SHEIN_APP_ID e SHEIN_APP_SECRET no arquivo .env")
+        return
+    
+    print(f"\nAmbiente: {ENVIRONMENT}")
+    print(f"APP_ID: {APP_ID}")
+    print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
+    
+    while True:
+        print("\n=== MENU ===")
+        print("1. Gerar link de autorização")
+        print("2. Trocar tempToken por chaves")
+        print("3. Testar API com chaves existentes")
+        print("4. Sair")
+        
+        opcao = input("\nEscolha uma opção: ").strip()
+        
+        if opcao == "1":
+            redirect_url = "https://www.casametais.com.br"
+            state = input("Digite o state (opcional, pressione Enter para 'default'): ").strip() or "default"
+            criar_link_autorizacao(redirect_url, state)
+            
+        elif opcao == "2":
+            print("\n⚠️  IMPORTANTE: O tempToken expira em 10 minutos!")
+            temp_token = input("Cole o tempToken aqui: ").strip()
+            if temp_token:
+                trocar_temp_token(temp_token)
+            else:
+                print("[ERRO] tempToken não pode estar vazio")
+                
+        elif opcao == "3":
+            # Tentar carregar chaves salvas
+            testar_check_publish_permission()
+                
+        elif opcao == "4":
+            print("\nSaindo...")
+            break
+        else:
+            print("\n[ERRO] Opção inválida")
 
 if __name__ == "__main__":
     main()

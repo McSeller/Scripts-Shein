@@ -9,7 +9,7 @@ import requests
 from dotenv import load_dotenv
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
-from descriptografar import decrypt_KEY
+from .descriptografar import decrypt_KEY
 
 load_dotenv()
 
@@ -195,65 +195,3 @@ def testar_api_com_chaves(open_key):
     response = requests.post(url, headers=headers, json=body, timeout=30)
     print(f"Status: {response.status_code}")
     print(f"Response: {response.text[:200]}...")  # Primeiros 200 caracteres
-
-def main():
-    """
-    Fluxo principal do processo de autorização
-    """
-    print("=" * 50)
-    print("CLIENTE API SHEIN - PROCESSO DE AUTORIZAÇÃO")
-    print("=" * 50)
-    
-    if not APP_ID or not APP_SECRET:
-        print("\n[ERRO] Configure SHEIN_APP_ID e SHEIN_APP_SECRET no arquivo .env")
-        return
-    
-    print(f"\nAmbiente: {ENVIRONMENT}")
-    print(f"APP_ID: {APP_ID}")
-    print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
-    
-    while True:
-        print("\n=== MENU ===")
-        print("1. Gerar link de autorização")
-        print("2. Trocar tempToken por chaves")
-        print("3. Testar API com chaves existentes")
-        print("4. Sair")
-        
-        opcao = input("\nEscolha uma opção: ").strip()
-        
-        if opcao == "1":
-            redirect_url = "https://www.casametais.com.br"
-            state = input("Digite o state (opcional, pressione Enter para 'default'): ").strip() or "default"
-            criar_link_autorizacao(redirect_url, state)
-            
-        elif opcao == "2":
-            print("\n⚠️  IMPORTANTE: O tempToken expira em 10 minutos!")
-            temp_token = input("Cole o tempToken aqui: ").strip()
-            if temp_token:
-                trocar_temp_token(temp_token)
-            else:
-                print("[ERRO] tempToken não pode estar vazio")
-                
-        elif opcao == "3":
-            # Tentar carregar chaves salvas
-            try:
-                from dotenv import dotenv_values
-                keys = dotenv_values(".env.keys")
-                open_key = keys.get("SHEIN_OPEN_KEY")
-                secret_key = keys.get("SHEIN_SECRET_KEY")
-                
-                if open_key and secret_key:
-                    testar_api_com_chaves(open_key, secret_key)
-                else:
-                    print("[ERRO] Chaves não encontradas em .env.keys")
-            except Exception as e:
-                print(f"[ERRO] {str(e)}")
-                
-        elif opcao == "4":
-            print("\nSaindo...")
-            break
-        else:
-            print("\n[ERRO] Opção inválida")
-
-if __name__ == "__main__":
-    main()
