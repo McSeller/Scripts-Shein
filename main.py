@@ -1,6 +1,8 @@
 from modulos.trocar_temptoken import trocar_temp_token, testar_api_com_chaves, criar_link_autorizacao
 from dotenv import load_dotenv
 from modulos.teste import testar_check_publish_permission
+from modulos.consulta_produtos import listar_sku_codes
+from modulos.puxar_dimensoes import processar
 import os
 
 load_dotenv()
@@ -47,7 +49,9 @@ def main():
         print("1. Gerar link de autorização")
         print("2. Trocar tempToken por chaves")
         print("3. Testar API com chaves existentes")
-        print("4. Sair")
+        print("4. Consultar SKUs")
+        print("5. Puxar dimensões")
+        print("6. Sair")
         
         opcao = input("\nEscolha uma opção: ").strip()
         
@@ -69,6 +73,10 @@ def main():
             testar_check_publish_permission()
                 
         elif opcao == "4":
+            listar_sku_codes()
+        elif opcao == "5":
+            processar()
+        elif opcao == "6":
             print("\nSaindo...")
             break
         else:
