@@ -6,7 +6,6 @@ import base64
 import string
 import secrets
 import requests
-from urllib.parse import quote
 from dotenv import load_dotenv
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -136,13 +135,8 @@ def trocar_temp_token(temp_token):
                 print(f"OpenKey ID: {open_key}")
                 print(f"SecretKey (criptografada): {encrypted_key}")
 
-                # Descriptografar a chave secreta
-                if encrypted_key:
-                    decrypted_key = descriptografar_secret_key(encrypted_key, APP_SECRET)
-                    print(f"SecretKey (descriptografada): {decrypted_key}")
-
-                    # Salvar as chaves
-                    salvar_chaves(open_key, decrypted_key)
+                # Salvar as chaves
+                salvar_chaves(open_key)
 
                 return result
             else:
@@ -155,45 +149,16 @@ def trocar_temp_token(temp_token):
 
     return None
 
-
-def descriptografar_secret_key(encrypted_key, app_secret):
-    """
-    Descriptografa a chave secreta usando AES-128-ECB
-    """
-    try:
-        # A chave AES é os primeiros 16 caracteres do APP_SECRET
-        aes_key = app_secret[:16].encode('utf-8')
-        
-        # Decodificar base64
-        encrypted_data = base64.b64decode(encrypted_key)
-        
-        # Criar cipher AES em modo ECB
-        cipher = AES.new(aes_key, AES.MODE_ECB)
-        
-        # Descriptografar
-        decrypted = cipher.decrypt(encrypted_data)
-        
-        # Remover padding PKCS7
-        decrypted = unpad(decrypted, AES.block_size)
-        
-        # Converter para string
-        return decrypted.decode('utf-8')
-        
-    except Exception as e:
-        print(f"[ERRO] Falha ao descriptografar: {str(e)}")
-        return None
-
-def salvar_chaves(open_key, secret_key):
+def salvar_chaves(open_key):
     """
     Salva as chaves em um arquivo .env.keys
     """
     with open(".env.keys", "w") as f:
         f.write(f"SHEIN_OPEN_KEY={open_key}\n")
-        f.write(f"SHEIN_SECRET_KEY={secret_key}\n")
     
     print("\n✅ Chaves salvas em .env.keys")
 
-def testar_api_com_chaves(open_key, secret_key):
+def testar_api_com_chaves(open_key):
     """
     Testa uma chamada de API usando as chaves obtidas
     """
@@ -201,7 +166,7 @@ def testar_api_com_chaves(open_key, secret_key):
     timestamp = str(int(time.time() * 1000))
     
     # Gerar assinatura com a nova chave
-    assinatura = gerar_assinatura(open_key, secret_key, timestamp, path)
+    assinatura = gerar_assinatura(open_key, timestamp, path)
     
     url = f"{API_HOST}{path}"
     headers = {
@@ -248,7 +213,7 @@ def main():
         opcao = input("\nEscolha uma opção: ").strip()
         
         if opcao == "1":
-            redirect_url = input("\nDigite a URL de redirecionamento (com https://): ").strip()
+            redirect_url = "https://www.casametais.com.br"
             state = input("Digite o state (opcional, pressione Enter para 'default'): ").strip() or "default"
             criar_link_autorizacao(redirect_url, state)
             
