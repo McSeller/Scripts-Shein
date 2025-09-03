@@ -6,13 +6,14 @@ import base64
 import string
 import secrets
 import requests
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
-load_dotenv()
+# load_dotenv()
+keys = dotenv_values('.env.keys')
 
 # Carrega as chaves
-OPEN_KEY = os.getenv("SHEIN_OPEN_KEY")          # openKeyId descriptografado (.env.keys)
-SECRET_KEY = os.getenv("SHEIN_SECRET_KEY")      # secretKey descriptografado (.env.keys)
+OPEN_KEY = keys["SHEIN_OPEN_KEY"]          # openKeyId descriptografado (.env.keys)
+SECRET_KEY = keys["SHEIN_SECRET_KEY"]      # secretKey descriptografado (.env.keys)
 
 API_HOST = "https://openapi.sheincorp.com"
 PATH = "/open-api/goods/product/check-publish-permission"
