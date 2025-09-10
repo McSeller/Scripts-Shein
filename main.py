@@ -4,10 +4,11 @@ from modulos.teste import testar_check_publish_permission
 from modulos.consulta_produtos import listar_sku_codes
 from modulos.puxar_dimensoes import processar
 from modulos.consulta_spu_info import processar_spus
-from modulos.limpa_historico import excluir_planilha, excluir_json
+from modulos.limpa_historico import excluir_planilha, excluir_json, excluir_txt
 from modulos.copiar_planilha_master import copiar_planilha
 from modulos.limpando_master import filter_amazon_rows
 from modulos.atualizador_preco import atualizar_precos_ctrl_L_com_log
+from modulos.enviar_atualizacao import enviar_precos, ler_planilha_detalhes
 import os
 
 load_dotenv()
@@ -52,7 +53,7 @@ def main():
     # Excluir uma planilha na raiz
     excluir_planilha("detalhes_shein.xlsx")
     excluir_planilha("detalhes_spu.xlsx")
-    excluir_planilha("log_atualizacao_precos_*.txt")
+    excluir_txt("log_atualizacao_precos_*.txt")
 
     # Excluir um JSON dentro da pasta modulos/produtos
     excluir_json("modulos/produtos", "skus_shein.json")
@@ -104,6 +105,12 @@ def main():
             output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
             filter_amazon_rows(input_file, output_file)
             atualizar_precos_ctrl_L_com_log()
+
+            # lista = ler_planilha_detalhes()
+            # log = enviar_precos(lista)
+            # with open(NOME_LOG, "w", encoding="utf-8") as f:
+            #     f.write("\n\n".join(log))
+            # print(f"Log salvo em {NOME_LOG}")
         elif opcao == "7":
             print("\nSaindo...")
             break
