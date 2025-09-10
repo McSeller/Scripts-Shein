@@ -6,6 +6,7 @@ from modulos.puxar_dimensoes import processar
 from modulos.consulta_spu_info import processar_spus
 from modulos.limpa_historico import excluir_planilha, excluir_json
 from modulos.copiar_planilha_master import copiar_planilha
+from modulos.limpando_master import filter_amazon_rows
 import os
 
 load_dotenv()
@@ -54,6 +55,7 @@ def main():
     # Excluir um JSON dentro da pasta modulos/produtos
     excluir_json("modulos/produtos", "skus_shein.json")
     excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
+    excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
     
     while True:
         print("\n=== MENU ===")
@@ -89,13 +91,16 @@ def main():
         elif opcao == "5":
             processar()
         elif opcao == "6":
-            # listar_sku_codes()
-            # processar_spus()
+            listar_sku_codes()
+            processar_spus()
             copiar_planilha(
                 r"\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master",
                 "Tabela de Preco Master.xlsx",
                 "Tabela Master"
             )
+            input_file = 'Tabela Master/Tabela de Preco Master.xlsx'
+            output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
+            filter_amazon_rows(input_file, output_file)
         elif opcao == "7":
             print("\nSaindo...")
             break
