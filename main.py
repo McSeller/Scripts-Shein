@@ -50,13 +50,14 @@ def main():
     # print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
 
     # Excluir uma planilha na raiz
-    # excluir_planilha("detalhes_shein.xlsx")
-    # excluir_planilha("detalhes_spu.xlsx")
+    excluir_planilha("detalhes_shein.xlsx")
+    excluir_planilha("detalhes_spu.xlsx")
+    excluir_planilha("log_atualizacao_precos_2025-09-10_13-59-28.txt")
 
-    # # Excluir um JSON dentro da pasta modulos/produtos
-    # excluir_json("modulos/produtos", "skus_shein.json")
-    # excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
-    # excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
+    # Excluir um JSON dentro da pasta modulos/produtos
+    excluir_json("modulos/produtos", "skus_shein.json")
+    excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
+    excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
     
     while True:
         print("\n=== MENU ===")

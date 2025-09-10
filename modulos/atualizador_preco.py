@@ -50,13 +50,15 @@ def atualizar_precos_ctrl_L_com_log():
                     log.append(f"      ❌ Erro ao converter preços para float: master='{preco_base_master}' | atual='{preco_base_atual}' | Erro: {str(e)}")
                     continue
 
-                if pba <= pbm:
+                if pba >= pbm:
+                    # Só atualiza SPECIALPRICE
                     sht_detalhes.range(f"E{linha}").value = promocao_master
-                    log.append(f"      → Atualizou apenas SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} <= PreçoBaseMaster {pbm})")
+                    log.append(f"      → Atualizou SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} >= PreçoBaseMaster {pbm})")
                 else:
+                    # Atualiza basePrice e SPECIALPRICE
                     sht_detalhes.range(f"D{linha}").value = pbm
                     sht_detalhes.range(f"E{linha}").value = promocao_master
-                    log.append(f"      → Atualizou BASEPRICE (D{linha}) para '{pbm}' e SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} > PreçoBaseMaster {pbm})")
+                    log.append(f"      → Atualizou BASEPRICE (D{linha}) para '{pbm}' e SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} < PreçoBaseMaster {pbm})")
                 alteracoes += 1
             else:
                 log.append(f"      → NÃO ENCONTRADO NA MASTER.")
