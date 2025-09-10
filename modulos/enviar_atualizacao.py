@@ -23,6 +23,7 @@ SECRET_KEY = keys["SHEIN_SECRET_KEY"]
 
 SITE = "shein-br"        # ajuste conforme necessário
 CURRENCY = "BRL"         # ajuste conforme necessário
+RISE_REASON = "3"  # ajuste conforme necessário
 
 def gerar_random_key(n=5):
     return ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(n))
@@ -76,6 +77,7 @@ def enviar_precos(lista_precos):
                 "productCode": item["sku"],
                 "site": SITE,
                 "shopPrice": item["preco"],
+                "riseReason": RISE_REASON,
             }
             if item["promo"] is not None:
                 payload["specialPrice"] = item["promo"]

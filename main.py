@@ -95,24 +95,24 @@ def main():
         elif opcao == "5":
             processar()
         elif opcao == "6":
-            # listar_sku_codes()
-            # processar_spus()
-            # copiar_planilha(
-            #     r"\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master",
-            #     "Tabela de Preco Master.xlsx",
-            #     "Tabela Master"
-            # )
-            # input_file = 'Tabela Master/Tabela de Preco Master.xlsx'
-            # output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
-            # filter_amazon_rows(input_file, output_file)
-            # atualizar_precos_ctrl_L_com_log()
+            listar_sku_codes()
+            processar_spus()
+            copiar_planilha(
+                r"\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master",
+                "Tabela de Preco Master.xlsx",
+                "Tabela Master"
+            )
+            input_file = 'Tabela Master/Tabela de Preco Master.xlsx'
+            output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
+            filter_amazon_rows(input_file, output_file)
+            atualizar_precos_ctrl_L_com_log()
 
-            lista = ler_planilha_detalhes()
-            log = enviar_precos(lista)
-            NOME_LOG = f"log_envio_precos_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
-            with open(NOME_LOG, "w", encoding="utf-8") as f:
-                f.write("\n\n".join(log))
-            print(f"Log salvo em {NOME_LOG}")
+            # lista = ler_planilha_detalhes()
+            # log = enviar_precos(lista)
+            # NOME_LOG = f"log_envio_precos_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+            # with open(NOME_LOG, "w", encoding="utf-8") as f:
+            #     f.write("\n\n".join(log))
+            # print(f"Log salvo em {NOME_LOG}")
         elif opcao == "7":
             print("\nSaindo...")
             break
