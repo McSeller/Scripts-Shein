@@ -10,6 +10,7 @@ from modulos.limpando_master import filter_amazon_rows
 from modulos.atualizador_preco import atualizar_precos_ctrl_L_com_log
 from modulos.enviar_atualizacao import enviar_precos, ler_planilha_detalhes
 import os
+from datetime import datetime
 
 load_dotenv()
 
@@ -51,14 +52,14 @@ def main():
     # print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
 
     # Excluir uma planilha na raiz
-    excluir_planilha("detalhes_shein.xlsx")
-    excluir_planilha("detalhes_spu.xlsx")
-    excluir_txt("log_atualizacao_precos_*.txt")
+    # excluir_planilha("detalhes_shein.xlsx")
+    # excluir_planilha("detalhes_spu.xlsx")
+    # excluir_txt("log_atualizacao_precos_*.txt")
 
-    # Excluir um JSON dentro da pasta modulos/produtos
-    excluir_json("modulos/produtos", "skus_shein.json")
-    excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
-    excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
+    # # Excluir um JSON dentro da pasta modulos/produtos
+    # excluir_json("modulos/produtos", "skus_shein.json")
+    # excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
+    # excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
     
     while True:
         print("\n=== MENU ===")
@@ -94,23 +95,24 @@ def main():
         elif opcao == "5":
             processar()
         elif opcao == "6":
-            listar_sku_codes()
-            processar_spus()
-            copiar_planilha(
-                r"\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master",
-                "Tabela de Preco Master.xlsx",
-                "Tabela Master"
-            )
-            input_file = 'Tabela Master/Tabela de Preco Master.xlsx'
-            output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
-            filter_amazon_rows(input_file, output_file)
-            atualizar_precos_ctrl_L_com_log()
+            # listar_sku_codes()
+            # processar_spus()
+            # copiar_planilha(
+            #     r"\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master",
+            #     "Tabela de Preco Master.xlsx",
+            #     "Tabela Master"
+            # )
+            # input_file = 'Tabela Master/Tabela de Preco Master.xlsx'
+            # output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
+            # filter_amazon_rows(input_file, output_file)
+            # atualizar_precos_ctrl_L_com_log()
 
-            # lista = ler_planilha_detalhes()
-            # log = enviar_precos(lista)
-            # with open(NOME_LOG, "w", encoding="utf-8") as f:
-            #     f.write("\n\n".join(log))
-            # print(f"Log salvo em {NOME_LOG}")
+            lista = ler_planilha_detalhes()
+            log = enviar_precos(lista)
+            NOME_LOG = f"log_envio_precos_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+            with open(NOME_LOG, "w", encoding="utf-8") as f:
+                f.write("\n\n".join(log))
+            print(f"Log salvo em {NOME_LOG}")
         elif opcao == "7":
             print("\nSaindo...")
             break
