@@ -61,7 +61,16 @@ def atualizar_precos_ctrl_L_com_log():
                     log.append(f"      → Atualizou BASEPRICE (D{linha}) para '{pbm}' e SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} < PreçoBaseMaster {pbm})")
                 alteracoes += 1
             else:
-                log.append(f"      → NÃO ENCONTRADO NA MASTER.")
+                preco_base_atual = sht_detalhes.range(f"D{linha}").value
+                try:
+                    pba = float(preco_base_atual)
+                    specialprice = round(pba * 0.95, 2)
+                    sht_detalhes.range(f"E{linha}").value = specialprice
+                    log.append(f"      → NÃO ENCONTRADO NA MASTER. Aplicado -5% em BasePrice: {pba} → SPECIALPRICE (E{linha}) = {specialprice}")
+                    alteracoes += 1
+                except Exception as e:
+                    log.append(f"      ❌ NÃO ENCONTRADO NA MASTER e erro ao calcular -5%: basePrice='{preco_base_atual}' | Erro: {str(e)}")
+
 
         wb_detalhes.save(ARQUIVO_DETALHES)
         log.append(f"\n✅ Atualização concluída. {alteracoes} linhas alteradas.")

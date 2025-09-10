@@ -52,7 +52,7 @@ def main():
     # Excluir uma planilha na raiz
     excluir_planilha("detalhes_shein.xlsx")
     excluir_planilha("detalhes_spu.xlsx")
-    excluir_planilha("log_atualizacao_precos_2025-09-10_13-59-28.txt")
+    excluir_planilha("log_atualizacao_precos_*.txt")
 
     # Excluir um JSON dentro da pasta modulos/produtos
     excluir_json("modulos/produtos", "skus_shein.json")
