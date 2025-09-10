@@ -7,6 +7,7 @@ from modulos.consulta_spu_info import processar_spus
 from modulos.limpa_historico import excluir_planilha, excluir_json
 from modulos.copiar_planilha_master import copiar_planilha
 from modulos.limpando_master import filter_amazon_rows
+from modulos.atualizador_preco import atualizar_precos_ctrl_L_com_log
 import os
 
 load_dotenv()
@@ -49,13 +50,13 @@ def main():
     # print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
 
     # Excluir uma planilha na raiz
-    excluir_planilha("detalhes_shein.xlsx")
-    excluir_planilha("detalhes_spu.xlsx")
+    # excluir_planilha("detalhes_shein.xlsx")
+    # excluir_planilha("detalhes_spu.xlsx")
 
-    # Excluir um JSON dentro da pasta modulos/produtos
-    excluir_json("modulos/produtos", "skus_shein.json")
-    excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
-    excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
+    # # Excluir um JSON dentro da pasta modulos/produtos
+    # excluir_json("modulos/produtos", "skus_shein.json")
+    # excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
+    # excluir_json("Tabela Master", "Tabela de Preco Master Shein.xlsx")
     
     while True:
         print("\n=== MENU ===")
@@ -101,6 +102,7 @@ def main():
             input_file = 'Tabela Master/Tabela de Preco Master.xlsx'
             output_file = 'Tabela Master/Tabela de Preco Master Shein.xlsx'
             filter_amazon_rows(input_file, output_file)
+            atualizar_precos_ctrl_L_com_log()
         elif opcao == "7":
             print("\nSaindo...")
             break
