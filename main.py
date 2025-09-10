@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from modulos.teste import testar_check_publish_permission
 from modulos.consulta_produtos import listar_sku_codes
 from modulos.puxar_dimensoes import processar
+from modulos.consulta_spu_info import processar_spus
+from modulos.limpa_historico import excluir_planilha, excluir_json
 import os
 
 load_dotenv()
@@ -43,6 +45,13 @@ def main():
     print(f"\nAmbiente: {ENVIRONMENT}")
     print(f"APP_ID: {APP_ID}")
     print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
+
+    # Excluir uma planilha na raiz
+    excluir_planilha("detalhes_shein.xlsx")
+    excluir_planilha("detalhes_spu.xlsx")
+
+    # Excluir um JSON dentro da pasta modulos/produtos
+    excluir_json("modulos/produtos", "skus_shein.json")
     
     while True:
         print("\n=== MENU ===")
@@ -51,7 +60,8 @@ def main():
         print("3. Testar API com chaves existentes")
         print("4. Consultar SKUs")
         print("5. Puxar dimensões")
-        print("6. Sair")
+        print("6. Consultar Preço e Preço Normal")
+        print("7. Sair")
         
         opcao = input("\nEscolha uma opção: ").strip()
         
@@ -77,6 +87,9 @@ def main():
         elif opcao == "5":
             processar()
         elif opcao == "6":
+            listar_sku_codes()
+            processar_spus()
+        elif opcao == "7":
             print("\nSaindo...")
             break
         else:
