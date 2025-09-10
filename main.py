@@ -5,6 +5,7 @@ from modulos.consulta_produtos import listar_sku_codes
 from modulos.puxar_dimensoes import processar
 from modulos.consulta_spu_info import processar_spus
 from modulos.limpa_historico import excluir_planilha, excluir_json
+from modulos.copiar_planilha_master import copiar_planilha
 import os
 
 os.makedirs("Tabela Master", exist_ok=True)
