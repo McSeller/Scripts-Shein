@@ -7,6 +7,8 @@ from modulos.consulta_spu_info import processar_spus
 from modulos.limpa_historico import excluir_planilha, excluir_json
 import os
 
+os.makedirs("Tabela Master", exist_ok=True)
+
 load_dotenv()
 
 # Configurações do ambiente
@@ -52,6 +54,7 @@ def main():
 
     # Excluir um JSON dentro da pasta modulos/produtos
     excluir_json("modulos/produtos", "skus_shein.json")
+    excluir_json("Tabela Master", "Tabela de Preco Master.xlsx")
     
     while True:
         print("\n=== MENU ===")
@@ -89,6 +92,7 @@ def main():
         elif opcao == "6":
             listar_sku_codes()
             processar_spus()
+            copiar_planilha("\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master", "Tabela de Preco Master.xlsx", "Tabela Master")
         elif opcao == "7":
             print("\nSaindo...")
             break

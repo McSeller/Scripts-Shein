@@ -20,7 +20,7 @@ SECRET_KEY = keys["SHEIN_SECRET_KEY"]
 API_HOST = "https://openapi.sheincorp.com"
 PATH = "/open-api/goods/spu-info"
 ARQUIVO_EXCEL = "detalhes_spu.xlsx"
-ARQUIVO_JSON = "C:\\Users\\Windows\\3D Objects\\Shein\\modulos\\produtos\\skus_shein.json"  # seu JSON de entrada
+ARQUIVO_JSON = "C:\\Users\\Windows\\3D Objects\\Shein\\modulos\\produtos\\skus_shein.json"
 
 # ==== FUNÇÕES AUXILIARES ====
 def gerar_random_key(n=5):
@@ -37,7 +37,6 @@ def gerar_assinatura(open_key_id, secret_key, path, timestamp, random_key):
 def ler_spus_arquivo(arquivo_json):
     with open(arquivo_json, encoding="utf-8") as f:
         dados = json.load(f)
-    # extrai lista única de spuName
     return sorted({x["spuName"] for x in dados if "spuName" in x})
 
 def consultar_spu(spu_name, idiomas=["pt-br"]):
@@ -77,6 +76,12 @@ def processar_spus():
         info = consultar_spu(spu)
         if not info:
             continue
+
+        # pegar título multilíngue (primeiro idioma solicitado)
+        titulo = ""
+        if "productMultiNameList" in info and info["productMultiNameList"]:
+            titulo = info["productMultiNameList"][0].get("productName", "")
+
         skc_list = info.get("skcInfoList", [])
         for skc in skc_list:
             for sku in skc.get("skuInfoList", []):
@@ -89,13 +94,13 @@ def processar_spus():
                     preco_promocional = preco_obj.get("specialPrice", "")
                 resultados.append({
                     "spuName": spu,
+                    "titulo": titulo,
                     "skuCode": skuCode,
                     "basePrice": preco_normal,
                     "specialPrice": preco_promocional
                 })
         time.sleep(0.5)
 
-    # Salvar no Excel
     df = pd.DataFrame(resultados)
     df.to_excel(ARQUIVO_EXCEL, index=False)
     print(f"Arquivo gerado: {ARQUIVO_EXCEL} ({len(df)} linhas)")
