@@ -8,8 +8,6 @@ from modulos.limpa_historico import excluir_planilha, excluir_json
 from modulos.copiar_planilha_master import copiar_planilha
 import os
 
-os.makedirs("Tabela Master", exist_ok=True)
-
 load_dotenv()
 
 # Configurações do ambiente
@@ -46,8 +44,8 @@ def main():
         return
     
     print(f"\nAmbiente: {ENVIRONMENT}")
-    print(f"APP_ID: {APP_ID}")
-    print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
+    # print(f"APP_ID: {APP_ID}")
+    # print(f"APP_SECRET: {'*' * (len(APP_SECRET) - 4)}{APP_SECRET[-4:]}")
 
     # Excluir uma planilha na raiz
     excluir_planilha("detalhes_shein.xlsx")
@@ -91,9 +89,13 @@ def main():
         elif opcao == "5":
             processar()
         elif opcao == "6":
-            listar_sku_codes()
-            processar_spus()
-            copiar_planilha("\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master", "Tabela de Preco Master.xlsx", "Tabela Master")
+            # listar_sku_codes()
+            # processar_spus()
+            copiar_planilha(
+                r"\\192.168.1.89\Site\Produtos\Preço\Tabelas Compilada\Comparador\Tabelas Master",
+                "Tabela de Preco Master.xlsx",
+                "Tabela Master"
+            )
         elif opcao == "7":
             print("\nSaindo...")
             break
