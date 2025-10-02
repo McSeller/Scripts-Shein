@@ -5,6 +5,8 @@ ARQUIVO_DETALHES = "detalhes_spu.xlsx"
 ARQUIVO_MASTER = r"C:\Users\Windows\3D Objects\Shein\Tabela Master\Tabela de Preco Master Shein.xlsx"
 NOME_LOG = f"log_atualizacao_precos_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
 
+COL_ATUALIZAR = "F"  # Nova coluna para controle
+
 def atualizar_precos_ctrl_L_com_log():
     app = xw.App(visible=False)
     log = []
@@ -16,8 +18,13 @@ def atualizar_precos_ctrl_L_com_log():
         sht_detalhes = wb_detalhes.sheets[0]
         sht_master = wb_master.sheets[0]
 
+        # Header da nova coluna (caso não exista)
+        if not sht_detalhes.range(f"{COL_ATUALIZAR}1").value:
+            sht_detalhes.range(f"{COL_ATUALIZAR}1").value = "NEEDS_UPDATE"
+
         ultima_detalhes = sht_detalhes.range("B" + str(sht_detalhes.cells.last_cell.row)).end("up").row
         alteracoes = 0
+        needs_update_count = 0
 
         for linha in range(2, ultima_detalhes + 1):
             titulo = sht_detalhes.range(f"B{linha}").value
@@ -48,17 +55,21 @@ def atualizar_precos_ctrl_L_com_log():
                     pba = float(preco_base_atual)
                 except Exception as e:
                     log.append(f"      ❌ Erro ao converter preços para float: master='{preco_base_master}' | atual='{preco_base_atual}' | Erro: {str(e)}")
+                    sht_detalhes.range(f"{COL_ATUALIZAR}{linha}").value = "ERRO"
                     continue
 
                 if pba >= pbm:
                     # Só atualiza SPECIALPRICE
                     sht_detalhes.range(f"E{linha}").value = promocao_master
+                    sht_detalhes.range(f"{COL_ATUALIZAR}{linha}").value = "-"
                     log.append(f"      → Atualizou SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} >= PreçoBaseMaster {pbm})")
                 else:
                     # Atualiza basePrice e SPECIALPRICE
                     sht_detalhes.range(f"D{linha}").value = pbm
                     sht_detalhes.range(f"E{linha}").value = promocao_master
-                    log.append(f"      → Atualizou BASEPRICE (D{linha}) para '{pbm}' e SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} < PreçoBaseMaster {pbm})")
+                    sht_detalhes.range(f"{COL_ATUALIZAR}{linha}").value = "ATUALIZAR"
+                    needs_update_count += 1
+                    log.append(f"      → Atualizou BASEPRICE (D{linha}) para '{pbm}' e SPECIALPRICE (E{linha}) para '{promocao_master}'. (BasePrice {pba} < PreçoBaseMaster {pbm}) [ATUALIZAR]")
                 alteracoes += 1
             else:
                 preco_base_atual = sht_detalhes.range(f"D{linha}").value
@@ -66,14 +77,15 @@ def atualizar_precos_ctrl_L_com_log():
                     pba = float(preco_base_atual)
                     specialprice = round(pba * 0.95, 2)
                     sht_detalhes.range(f"E{linha}").value = specialprice
+                    sht_detalhes.range(f"{COL_ATUALIZAR}{linha}").value = "-"
                     log.append(f"      → NÃO ENCONTRADO NA MASTER. Aplicado -5% em BasePrice: {pba} → SPECIALPRICE (E{linha}) = {specialprice}")
                     alteracoes += 1
                 except Exception as e:
                     log.append(f"      ❌ NÃO ENCONTRADO NA MASTER e erro ao calcular -5%: basePrice='{preco_base_atual}' | Erro: {str(e)}")
-
+                    sht_detalhes.range(f"{COL_ATUALIZAR}{linha}").value = "ERRO"
 
         wb_detalhes.save(ARQUIVO_DETALHES)
-        log.append(f"\n✅ Atualização concluída. {alteracoes} linhas alteradas.")
+        log.append(f"\n✅ Atualização concluída. {alteracoes} linhas alteradas. {needs_update_count} produtos marcados para atualização.")
 
     finally:
         with open(NOME_LOG, "w", encoding="utf-8") as f:
